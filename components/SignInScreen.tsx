@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, TextInput, Button } from "react-native";
 import { AsyncStorage } from "react-native";
 
-export function SignInScreen({ navigation }) {
+export function SignInScreen({ navigation, setLogged }) {
   async function createAccount() {
     try {
       await AsyncStorage.setItem("logged", "true");
-      navigation.navigate("Home");
+      setLogged(true);
     } catch (e) {
       console.log(e);
     }

@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { AsyncStorage } from "react-native";
-
-const Stack = createStackNavigator();
 
 import { LoginScreen } from "./components/LoginScreen";
 import { SignInScreen } from "./components/SignInScreen";
@@ -21,7 +19,9 @@ export default function App() {
       if (!!userAlreadyLogged) {
         setLogged(true);
       }
-      setIsLoading(false);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 2000);
     } catch (e) {
       console.log(e);
     }
@@ -29,34 +29,65 @@ export default function App() {
 
   useEffect(() => {
     checkUserAlreadyLogged();
+    console.log(logged);
   });
 
   if (isLoading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>Ecran de chargement</Text>
+      <View style={styles.container}>
+        <Text style={styles.textLoading}>
+          Chargement de votre session en cours...
+        </Text>
+        <ActivityIndicator size="large" color="#1d1d1d" />
       </View>
     );
   }
 
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: "#1d1d1d"
-          },
-          headerTintColor: "#fff",
-          headerTitleStyle: {},
-          headerTitleAlign: "center"
-        }}>
-        <Stack.Screen name="Login">
-          {props => <LoginScreen {...props} setLogged={setLogged} />}
-        </Stack.Screen>
-        {logged && <Stack.Screen name="Home" component={HomeScreen} />}
-      </Stack.Navigator>
+      {logged === false ? (
+        <LoginStackScreen setLogged={setLogged} />
+      ) : (
+        <HomeStackScreen setLogged={setLogged} />
+      )}
     </NavigationContainer>
   );
 }
 
-/* <Stack.Screen name="SignIn" component={SignInScreen} /> */
+const HomeStack = createStackNavigator();
+
+function HomeStackScreen({ setLogged }) {
+  return (
+    <HomeStack.Navigator>
+      <HomeStack.Screen name="Home">
+        {props => <HomeScreen {...props} setLogged={setLogged} />}
+      </HomeStack.Screen>
+    </HomeStack.Navigator>
+  );
+}
+
+const LoginStack = createStackNavigator();
+
+function LoginStackScreen({ setLogged }) {
+  return (
+    <LoginStack.Navigator>
+      <LoginStack.Screen name="Login">
+        {props => <LoginScreen {...props} setLogged={setLogged} />}
+      </LoginStack.Screen>
+      <LoginStack.Screen name="SignIn">
+        {props => <SignInScreen {...props} setLogged={setLogged} />}
+      </LoginStack.Screen>
+    </LoginStack.Navigator>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center"
+  },
+  textLoading: {
+    textAlign: "center",
+    marginBottom: 40
+  }
+});

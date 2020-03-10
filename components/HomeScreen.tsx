@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Button } from "react-native";
 import { AsyncStorage } from "react-native";
 
-export function HomeScreen({ navigation }) {
+export function HomeScreen({ setLogged }) {
   async function logout() {
     try {
       await AsyncStorage.removeItem("logged");
-      navigation.navigate("Login");
+      setLogged(false);
     } catch (e) {
       console.log(e);
     }
