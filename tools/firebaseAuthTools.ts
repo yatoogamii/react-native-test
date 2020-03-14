@@ -7,9 +7,7 @@ interface IFetchError {
   message: string;
 }
 
-type test = IFetchError | ISignInMailPasswordOutput;
-
-interface IFetchResponse {
+export interface IFetchResponse {
   status: "ok" | "error";
   data?: ISignInMailPasswordOutput;
   error?: IFetchError;
@@ -22,6 +20,8 @@ interface ISignInMailPasswordInput {
   password: string;
 }
 
+interface ISignUpMailPasswordInput extends ISignInMailPasswordInput {}
+
 interface ISignInMailPasswordOutput {
   localId: string;
   email: string;
@@ -32,6 +32,8 @@ interface ISignInMailPasswordOutput {
   expiresIn: string;
   error?: IFetchError;
 }
+
+interface ISignUpMailPasswordOutput extends ISignInMailPasswordOutput {}
 
 export async function signInMailPassword(
   params: ISignInMailPasswordInput,
@@ -53,6 +55,47 @@ export async function signInMailPassword(
     );
 
     const response: ISignInMailPasswordOutput | any = await fetched.json();
+
+    if ("error" in response) {
+      return {
+        status: "error",
+        data: response.error,
+      };
+    } else {
+      return {
+        status: "ok",
+        data: response,
+      };
+    }
+  } catch (e) {
+    console.log(e);
+    return {
+      status: "error",
+      data: e,
+    };
+  }
+}
+
+export async function signUpMailPassword(
+  params: ISignUpMailPasswordInput,
+): Promise<IFetchResponse> {
+  try {
+    const fetched = await fetch(
+      `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: params.email,
+          password: params.password,
+          returnSecureToken: true,
+        }),
+      },
+    );
+
+    const response: ISignUpMailPasswordOutput | any = await fetched.json();
 
     if ("error" in response) {
       return {

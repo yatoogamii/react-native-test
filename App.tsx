@@ -6,8 +6,8 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { AsyncStorage } from "react-native";
 
 // components
-import { LoginScreen } from "./components/LoginScreen";
 import { SignInScreen } from "./components/SignInScreen";
+import { SignUpScreen } from "./components/SignUpScreen";
 import { HomeScreen } from "./components/HomeScreen";
 
 export default function App() {
@@ -72,11 +72,11 @@ const LoginStack = createStackNavigator();
 function LoginStackScreen({ setLogged }) {
   return (
     <LoginStack.Navigator>
-      <LoginStack.Screen name="Login">
-        {props => <LoginScreen {...props} setLogged={setLogged} />}
-      </LoginStack.Screen>
       <LoginStack.Screen name="SignIn">
         {props => <SignInScreen {...props} setLogged={setLogged} />}
+      </LoginStack.Screen>
+      <LoginStack.Screen name="SignUp">
+        {props => <SignUpScreen {...props} setLogged={setLogged} />}
       </LoginStack.Screen>
     </LoginStack.Navigator>
   );

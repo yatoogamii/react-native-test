@@ -1,31 +1,35 @@
-import React, { useState, useEffect, useRef } from "react";
-import { View, Text, StyleSheet, TextInput, Button, Alert } from "react-native";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, Text, View, TextInput, Button, Alert } from "react-native";
 import { AsyncStorage } from "react-native";
 
 // tools
-import { signInMailPassword } from "./../tools/firebaseAuthTools";
+import { signUpMailPassword } from "./../tools/firebaseAuthTools";
+import { IFetchResponse } from "./../tools/firebaseAuthTools";
 
-export function LoginScreen({ setLogged, navigation }) {
+export function SignUpScreen({ navigation, setLogged }) {
   const [userMail, setUserMail] = useState("");
   const [userPassword, setUserPassword] = useState("");
 
-  async function login() {
-    const response = await signInMailPassword({
-      email: userMail,
-      password: userPassword,
-    });
+  async function signUp() {
+    try {
+      const response: IFetchResponse = await signUpMailPassword({
+        email: userMail,
+        password: userPassword,
+      });
+      console.log(response);
 
-    if (response.status === "ok") {
-      try {
+      if (response.status === "ok") {
         await AsyncStorage.setItem("logged", "true");
         await AsyncStorage.setItem("localId", response.data.localId);
         setLogged(true);
-      } catch (e) {
-        console.log(e);
+      } else {
+        console.log("Oups...");
+        Alert.alert("Oups...");
       }
-    } else {
+    } catch (e) {
       console.log("Oups...");
       Alert.alert("Oups...");
+      console.log(e);
     }
   }
 
@@ -33,24 +37,16 @@ export function LoginScreen({ setLogged, navigation }) {
     <View style={styles.containerCenter}>
       <View style={styles.containerForm}>
         <TextInput
-          style={styles.input}
           onChangeText={inputValue => setUserMail(inputValue)}
-          autoCapitalize="none"
-          keyboardType="email-address"
-          textContentType="emailAddress"
+          style={styles.input}
           placeholder="jon.doe@gmail.com"
         />
         <TextInput
-          style={styles.input}
           onChangeText={inputValue => setUserPassword(inputValue)}
-          autoCapitalize="none"
-          textContentType="password"
+          style={styles.input}
           placeholder="password"
         />
-        <Button title="Se connecter" onPress={login} />
-        <Text style={styles.text} onPress={() => navigation.navigate("SignIn")}>
-          Vous voulez créer un compte ?
-        </Text>
+        <Button title="Créer un compte" onPress={signUp} />
       </View>
     </View>
   );
