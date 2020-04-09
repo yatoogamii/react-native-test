@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Blank Template (TypeScript)",
+    "name": "AppSocial",
     "slug": "AwesomeProject",
     "privacy": "public",
     "sdkVersion": "36.0.0",
@@ -24,7 +24,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
-    }
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yatoogamii.appsocial",
+      "buildNumber": "0.0.1"
+    },
+    "android": {
+      "package": "com.yatoogamii.appsocial",
+      "googleServicesFile": "./google-services.json",
+      "versionCode": 0
+    },
+    "description": ""
   }
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import {
   View,
   Text,
@@ -10,18 +10,23 @@ import {
 } from "react-native";
 import * as firebase from "firebase";
 import * as Facebook from "expo-facebook";
+import { AppStateContext } from "../App";
 
-export function SignInScreen({ setLogged, navigation }) {
+export function SignInScreen({ navigation }) {
   const [userMail, setUserMail] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const [error, setErrorMessage] = useState({ code: "", message: "" });
+  const appState = useContext(AppStateContext);
 
   async function signInByEmail() {
     try {
-      const userCredential = await firebase
+      const response = await firebase
         .auth()
         .signInWithEmailAndPassword(userMail, userPassword);
-      setLogged(true);
+      appState.setUserProfile({
+        isNewUser: response.additionalUserInfo.isNewUser,
+      });
+      appState.setLogged(true);
     } catch (e) {
       console.log(e);
       setErrorMessage({ code: e.code, message: e.message });
@@ -30,7 +35,6 @@ export function SignInScreen({ setLogged, navigation }) {
 
   async function signInByFacebook() {
     try {
-      console.log("test 1");
       await Facebook.initializeAsync("208182217139760", "AppSocial");
       const { type, token } = await Facebook.logInWithReadPermissionsAsync({
         permissions: [
@@ -44,9 +48,11 @@ export function SignInScreen({ setLogged, navigation }) {
       if (type === "success") {
         const credential = firebase.auth.FacebookAuthProvider.credential(token);
         const response = await firebase.auth().signInWithCredential(credential);
-        console.log(response);
+        appState.setUserProfile({
+          isNewUser: response.additionalUserInfo.isNewUser,
+        });
+        appState.setLogged(true);
       }
-      console.log("test 2");
     } catch (e) {
       console.log(e);
       setErrorMessage({ code: e.code, message: e.message });

@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useContext } from "react";
 import { StyleSheet, Text, View, Button } from "react-native";
 import * as firebase from "firebase";
-import { UserProfileContext } from "../App";
+import { AppStateContext } from "../App";
 
-export function HomeScreen({ setLogged }) {
-  const userProfile = useContext(UserProfileContext);
-
+export function HomeScreen() {
+  const appState = useContext(AppStateContext);
   async function logout() {
     try {
-      setLogged(false);
       await firebase.auth().signOut();
+      appState.setLogged(false);
     } catch (e) {
       console.log(e);
     }
@@ -17,9 +16,7 @@ export function HomeScreen({ setLogged }) {
 
   return (
     <View style={styles.containerCenter}>
-      <Text style={styles.title}>
-        Hello {userProfile.displayName || "anonyme"} ! Bienvenue dans le Home
-      </Text>
+      <Text style={styles.title}>Hello ! Bienvenue dans le Home</Text>
       <Button title="Log out" onPress={logout} />
     </View>
   );

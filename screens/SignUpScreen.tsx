@@ -1,16 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { StyleSheet, Text, View, TextInput, Button, Alert } from "react-native";
 import * as firebase from "firebase";
+import { AppStateContext } from "../App";
 
-export function SignUpScreen({ navigation, setLogged }) {
+export function SignUpScreen({ navigation }) {
   const [userMail, setUserMail] = useState("");
   const [userPassword, setUserPassword] = useState("");
+  const appState = useContext(AppStateContext);
 
-  function signUp() {
-    console.log("test 1");
-    firebase.auth().createUserWithEmailAndPassword(userMail, userPassword);
-    setLogged(true);
-    console.log("test 2");
+  async function signUp() {
+    try {
+      const response = await firebase
+        .auth()
+        .createUserWithEmailAndPassword(userMail, userPassword);
+      appState.setUserProfile({
+        isNewUser: response.additionalUserInfo.isNewUser,
+      });
+      appState.setLogged(true);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   return (

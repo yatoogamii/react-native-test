@@ -1,5 +1,5 @@
 // React import
-import React, { useState, useEffect, createContext } from "react";
+import React, { useState, useEffect, useReducer, createContext } from "react";
 import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -7,15 +7,6 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 // Firebase
 import * as firebase from "firebase";
-
-// Context
-export const UserProfileContext = createContext({
-  email: "",
-  displayName: "",
-  tokenId: "",
-  phone: "",
-  photoURL: "",
-});
 
 // Your web app's Firebase configuration
 // @TODO mettre les infos dans un .env
@@ -27,22 +18,59 @@ const firebaseConfig = {
   storageBucket: "appsocial-23e47.appspot.com",
   messagingSenderId: "191864958746",
   appId: "1:191864958746:web:d06eb52de98eb7e81c86a3",
+  measurementId: "G-G79G8T08VS",
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
+firebase.analytics();
+firebase.performance();
 
 // components
 import { SignInScreen } from "./screens/SignInScreen";
 import { SignUpScreen } from "./screens/SignUpScreen";
 import { HomeScreen } from "./screens/HomeScreen";
 
+const appState = {
+  userProfile: {
+    email: "",
+    displayName: "",
+    phone: "",
+    photoURL: "",
+    tokenId: "",
+    isNewUser: false,
+  },
+  setUserProfile: action => {},
+  setLogged: action => {},
+};
+
+// context
+export const AppStateContext = createContext(appState);
+
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
-  const [logged, setLogged] = useState(false);
-  const [userProfile, setUserProfile] = useState({});
+  const [logged, setLogged] = useReducer(setLoggedReducer, false);
+  const [userProfile, setUserProfile] = useReducer(
+    userProfileReducer,
+    appState,
+  );
+
+  function userProfileReducer(state, action) {
+    return {
+      ...state,
+      userProfile: {
+        ...state.userProfile,
+        ...action,
+      },
+    };
+  }
+
+  function setLoggedReducer(state, action) {
+    return action;
+  }
 
   function checkUserAlreadyLogged() {
     firebase.auth().onAuthStateChanged(async user => {
+      console.log(user);
       try {
         if (user !== null) {
           setUserProfile({
@@ -79,25 +107,27 @@ export default function App() {
   }
 
   return (
-    <UserProfileContext.Provider value={userProfile}>
+    <AppStateContext.Provider
+      value={{
+        userProfile,
+        setUserProfile,
+        setLogged: setLogged,
+      }}>
       <NavigationContainer>
-        {logged === false ? (
-          <LoginStackScreen setLogged={setLogged} />
-        ) : (
-          <HomeStackScreen setLogged={setLogged} />
-        )}
+        {logged === false ? <LoginStackScreen /> : <HomeStackScreen />}
       </NavigationContainer>
-    </UserProfileContext.Provider>
+    </AppStateContext.Provider>
   );
 }
 
 const HomeStack = createStackNavigator();
 
-function HomeStackScreen({ setLogged }) {
+function HomeStackScreen() {
   return (
     <HomeStack.Navigator>
+      {}
       <HomeStack.Screen name="Home">
-        {props => <HomeScreen {...props} setLogged={setLogged} />}
+        {props => <HomeScreen {...props} />}
       </HomeStack.Screen>
     </HomeStack.Navigator>
   );
@@ -105,14 +135,14 @@ function HomeStackScreen({ setLogged }) {
 
 const LoginStack = createStackNavigator();
 
-function LoginStackScreen({ setLogged }) {
+function LoginStackScreen() {
   return (
     <LoginStack.Navigator>
       <LoginStack.Screen name="SignIn">
-        {props => <SignInScreen {...props} setLogged={setLogged} />}
+        {props => <SignInScreen {...props} />}
       </LoginStack.Screen>
       <LoginStack.Screen name="SignUp">
-        {props => <SignUpScreen {...props} setLogged={setLogged} />}
+        {props => <SignUpScreen {...props} />}
       </LoginStack.Screen>
     </LoginStack.Navigator>
   );
