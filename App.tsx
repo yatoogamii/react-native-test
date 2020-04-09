@@ -1,5 +1,11 @@
 // React import
-import React, { useState, useEffect, useReducer, createContext } from "react";
+import React, {
+  useState,
+  useEffect,
+  useReducer,
+  useContext,
+  createContext,
+} from "react";
 import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -9,7 +15,6 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import * as firebase from "firebase";
 
 // Your web app's Firebase configuration
-// @TODO mettre les infos dans un .env
 const firebaseConfig = {
   apiKey: "AIzaSyAADtACo0kqZSuqXM-MeUL10KEev5KWIu0",
   authDomain: "appsocial-23e47.firebaseapp.com",
@@ -22,13 +27,12 @@ const firebaseConfig = {
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-firebase.analytics();
-firebase.performance();
 
 // components
 import { SignInScreen } from "./screens/SignInScreen";
 import { SignUpScreen } from "./screens/SignUpScreen";
 import { HomeScreen } from "./screens/HomeScreen";
+import { CompleteProfileScreen } from "./screens/CompleteProfileScreen";
 
 const appState = {
   userProfile: {
@@ -44,7 +48,7 @@ const appState = {
 };
 
 // context
-export const AppStateContext = createContext(appState);
+export const AppStateContext = createContext(null);
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -70,7 +74,6 @@ export default function App() {
 
   function checkUserAlreadyLogged() {
     firebase.auth().onAuthStateChanged(async user => {
-      console.log(user);
       try {
         if (user !== null) {
           setUserProfile({
@@ -109,7 +112,7 @@ export default function App() {
   return (
     <AppStateContext.Provider
       value={{
-        userProfile,
+        ...userProfile,
         setUserProfile,
         setLogged: setLogged,
       }}>
@@ -123,12 +126,18 @@ export default function App() {
 const HomeStack = createStackNavigator();
 
 function HomeStackScreen() {
+  const appState = useContext(AppStateContext);
   return (
     <HomeStack.Navigator>
-      {}
-      <HomeStack.Screen name="Home">
-        {props => <HomeScreen {...props} />}
-      </HomeStack.Screen>
+      {appState.userProfile.isNewUser === true ? (
+        <HomeStack.Screen name="CompleteProfile">
+          {props => <CompleteProfileScreen />}
+        </HomeStack.Screen>
+      ) : (
+        <HomeStack.Screen name="Home">
+          {props => <HomeScreen {...props} />}
+        </HomeStack.Screen>
+      )}
     </HomeStack.Navigator>
   );
 }

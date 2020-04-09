@@ -14,6 +14,7 @@
     "@react-navigation/stack": "^5.1.1",
     "expo": "~36.0.0",
     "expo-facebook": "~8.0.0",
+    "expo-firebase-analytics": "^2.1.2",
     "expo-firebase-recaptcha": "^1.0.0",
     "expo-google-app-auth": "^8.1.0",
     "expo-google-sign-in": "~8.0.0",

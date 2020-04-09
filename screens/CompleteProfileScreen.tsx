@@ -3,26 +3,12 @@ import { StyleSheet, Text, View, Button } from "react-native";
 import * as firebase from "firebase";
 import { AppStateContext } from "../App";
 
-export function HomeScreen({ navigation }) {
+export function CompleteProfileScreen() {
   const appState = useContext(AppStateContext);
-  console.log(appState);
-  if (appState.userProfile.isNewUser) {
-    navigation.navigate("CompleteProfile");
-  }
-
-  async function logout() {
-    try {
-      await firebase.auth().signOut();
-      appState.setLogged(false);
-    } catch (e) {
-      console.log(e);
-    }
-  }
 
   return (
     <View style={styles.containerCenter}>
-      <Text style={styles.title}>Hello ! Bienvenue dans le Home</Text>
-      <Button title="Log out" onPress={logout} />
+      <Text style={styles.title}>Veuillez completer votre profile</Text>
     </View>
   );
 }

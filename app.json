@@ -4,11 +4,7 @@
     "slug": "AwesomeProject",
     "privacy": "public",
     "sdkVersion": "36.0.0",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
+    "platforms": ["ios", "android", "web"],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -20,9 +16,7 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.yatoogamii.appsocial",
@@ -32,6 +26,20 @@
       "package": "com.yatoogamii.appsocial",
       "googleServicesFile": "./google-services.json",
       "versionCode": 0
+    },
+    "web": {
+      "config": {
+        "firebase": {
+          "apiKey": "AIzaSyAADtACo0kqZSuqXM-MeUL10KEev5KWIu0",
+          "authDomain": "appsocial-23e47.firebaseapp.com",
+          "databaseURL": "https://appsocial-23e47.firebaseio.com",
+          "projectId": "appsocial-23e47",
+          "storageBucket": "appsocial-23e47.appspot.com",
+          "messagingSenderId": "191864958746",
+          "appId": "1:191864958746:web:d06eb52de98eb7e81c86a3",
+          "measurementId": "G-G79G8T08VS"
+        }
+      }
     },
     "description": ""
   }
