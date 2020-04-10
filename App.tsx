@@ -1,3 +1,14 @@
+// env
+import {
+  API_KEY,
+  AUTH_DOMAIN,
+  DATABASE_URL,
+  PROJECT_ID,
+  STORAGE_BUCKET,
+  MESSAGING_SENDER_ID,
+  APP_ID,
+  MEASUREMENT_ID,
+} from "react-native-dotenv";
 // React import
 import React, {
   useState,
@@ -13,20 +24,23 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 // Firebase
 import * as firebase from "firebase";
+import "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAADtACo0kqZSuqXM-MeUL10KEev5KWIu0",
-  authDomain: "appsocial-23e47.firebaseapp.com",
-  databaseURL: "https://appsocial-23e47.firebaseio.com",
-  projectId: "appsocial-23e47",
-  storageBucket: "appsocial-23e47.appspot.com",
-  messagingSenderId: "191864958746",
-  appId: "1:191864958746:web:d06eb52de98eb7e81c86a3",
-  measurementId: "G-G79G8T08VS",
+  apiKey: API_KEY,
+  authDomain: AUTH_DOMAIN,
+  databaseURL: DATABASE_URL,
+  projectId: PROJECT_ID,
+  storageBucket: STORAGE_BUCKET,
+  messagingSenderId: MESSAGING_SENDER_ID,
+  appId: APP_ID,
+  measurementId: MEASUREMENT_ID,
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+console.log(db);
 
 // components
 import { SignInScreen } from "./screens/SignInScreen";

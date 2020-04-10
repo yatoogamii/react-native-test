@@ -7,6 +7,7 @@ npm-debug.*
 *.key
 *.mobileprovision
 *.orig.*
+*.env
 web-build/
 web-report/
 google-services.json
@@ -15,5 +16,4 @@ google-services.json
 .DS_Store
 
 # api
-
 api/node_modules/**/*

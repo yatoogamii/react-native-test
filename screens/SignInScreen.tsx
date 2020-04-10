@@ -1,3 +1,5 @@
+// env
+import { FACEBOOK_APP_ID, FACEBOOK_APP_NAME } from "react-native-dotenv";
 import React, { useState, useEffect, useRef, useContext } from "react";
 import {
   View,
@@ -36,7 +38,7 @@ export function SignInScreen({ navigation }) {
 
   async function signInByFacebook() {
     try {
-      await Facebook.initializeAsync("208182217139760", "AppSocial");
+      await Facebook.initializeAsync(FACEBOOK_APP_ID, FACEBOOK_APP_NAME);
       const { type, token } = await Facebook.logInWithReadPermissionsAsync({
         permissions: [
           "public_profile",
@@ -63,6 +65,10 @@ export function SignInScreen({ navigation }) {
   return (
     <View style={styles.containerCenter}>
       <View style={styles.containerForm}>
+        {(error.code === "auth/user-not-found" ||
+          error.code === "auth/user-disabled") && (
+          <Text style={{ color: "red" }}>{error.message}</Text>
+        )}
         <TextInput
           style={styles.input}
           onChangeText={inputValue => setUserMail(inputValue)}

@@ -6,6 +6,7 @@ import { AppStateContext } from "../App";
 export function SignUpScreen({ navigation }) {
   const [userMail, setUserMail] = useState("");
   const [userPassword, setUserPassword] = useState("");
+  const [error, setErrorMessage] = useState({ code: "", message: "" });
   const appState = useContext(AppStateContext);
 
   async function signUp() {
@@ -19,12 +20,16 @@ export function SignUpScreen({ navigation }) {
       appState.setLogged(true);
     } catch (e) {
       console.log(e);
+      setErrorMessage({ code: e.code, message: e.message });
     }
   }
 
   return (
     <View style={styles.containerCenter}>
       <View style={styles.containerForm}>
+        {error.code === "auth/operation-not-allowed" && (
+          <Text style={{ color: "red" }}>{error.message}</Text>
+        )}
         <TextInput
           onChangeText={inputValue => setUserMail(inputValue)}
           style={styles.input}
@@ -33,6 +38,10 @@ export function SignUpScreen({ navigation }) {
           textContentType="emailAddress"
           placeholder="jon.doe@gmail.com"
         />
+        {(error.code === "auth/invalid-email" ||
+          error.code === "auth/email-already-in-use") && (
+          <Text style={{ color: "red" }}>{error.message}</Text>
+        )}
         <TextInput
           onChangeText={inputValue => setUserPassword(inputValue)}
           style={styles.input}
@@ -40,6 +49,9 @@ export function SignUpScreen({ navigation }) {
           textContentType="password"
           placeholder="password"
         />
+        {error.code === "auth/weak-password" && (
+          <Text style={{ color: "red" }}>{error.message}</Text>
+        )}
         <Button title="Créer un compte" onPress={signUp} />
       </View>
     </View>
