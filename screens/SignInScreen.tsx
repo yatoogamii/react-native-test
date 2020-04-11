@@ -19,7 +19,6 @@ export function SignInScreen({ navigation }) {
   const [userPassword, setUserPassword] = useState("");
   const [error, setErrorMessage] = useState({ code: "", message: "" });
   const appState = useContext(AppStateContext);
-  console.log(appState);
 
   async function signInByEmail() {
     try {

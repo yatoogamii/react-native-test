@@ -5,7 +5,6 @@ import { AppStateContext } from "../App";
 
 export function HomeScreen({ navigation }) {
   const appState = useContext(AppStateContext);
-  console.log(appState);
   if (appState.userProfile.isNewUser) {
     navigation.navigate("CompleteProfile");
   }

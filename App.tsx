@@ -24,7 +24,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 // Firebase
 import * as firebase from "firebase";
-import "firebase/firestore";
+import "@firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -40,7 +40,6 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
-console.log(db);
 
 // components
 import { SignInScreen } from "./screens/SignInScreen";
@@ -89,6 +88,11 @@ export default function App() {
   function checkUserAlreadyLogged() {
     firebase.auth().onAuthStateChanged(async user => {
       try {
+        const users = await db.collection("users").get();
+        users.forEach(docs => {
+          console.log(docs.data());
+        });
+
         if (user !== null) {
           setUserProfile({
             email: user.email,
